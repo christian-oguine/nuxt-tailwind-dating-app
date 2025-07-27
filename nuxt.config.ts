@@ -7,5 +7,11 @@ export default defineNuxtConfig({
     '@nuxtjs/google-fonts',
     '@nuxt/icon',
     '@nuxt/image'
-  ]
+  ],
+
+  googleFonts: {
+    families: {
+      Montserrat: true,
+    },
+  },
 })
