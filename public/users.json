@@ -1,0 +1,160 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "firstName": "Emma",
+      "lastName": "Wilson",
+      "age": 28,
+      "gender": "female",
+      "image": "/1.jpg",
+      "bio": "Adventure seeker and coffee enthusiast",
+      "address": {
+        "city": "New York",
+        "country": "United States"
+      }
+    },
+    {
+      "id": 2,
+      "firstName": "James",
+      "lastName": "Anderson",
+      "age": 32,
+      "gender": "male",
+      "image": "/2.jpg",
+      "bio": "Tech professional who loves hiking",
+      "address": {
+        "city": "San Francisco",
+        "country": "United States"
+      }
+    },
+    {
+      "id": 3,
+      "firstName": "Sophie",
+      "lastName": "Martin",
+      "age": 26,
+      "gender": "female",
+      "image": "/3.jpg",
+      "bio": "Artist and yoga instructor",
+      "address": {
+        "city": "Los Angeles",
+        "country": "United States"
+      }
+    },
+    {
+      "id": 4,
+      "firstName": "Michael",
+      "lastName": "Brown",
+      "age": 29,
+      "gender": "male",
+      "image": "/4.jpg",
+      "bio": "Chef and food blogger",
+      "address": {
+        "city": "Chicago",
+        "country": "United States"
+      }
+    },
+    {
+      "id": 5,
+      "firstName": "Isabella",
+      "lastName": "Garcia",
+      "age": 24,
+      "gender": "female",
+      "image": "/5.jpg",
+      "bio": "Medical student and book lover",
+      "address": {
+        "city": "Miami",
+        "country": "United States"
+      }
+    },
+    {
+      "id": 6,
+      "firstName": "David",
+      "lastName": "Johnson",
+      "age": 31,
+      "gender": "male",
+      "image": "/6.jpg",
+      "bio": "Software engineer and musician",
+      "address": {
+        "city": "Seattle",
+        "country": "United States"
+      }
+    },
+    {
+      "id": 7,
+      "firstName": "Olivia",
+      "lastName": "Davis",
+      "age": 27,
+      "gender": "female",
+      "image": "/7.jpg",
+      "bio": "Marketing manager and travel enthusiast",
+      "address": {
+        "city": "Austin",
+        "country": "United States"
+      }
+    },
+    {
+      "id": 8,
+      "firstName": "Alexander",
+      "lastName": "Miller",
+      "age": 30,
+      "gender": "male",
+      "image": "/8.jpg",
+      "bio": "Fitness trainer and outdoor enthusiast",
+      "address": {
+        "city": "Denver",
+        "country": "United States"
+      }
+    },
+    {
+      "id": 9,
+      "firstName": "Ava",
+      "lastName": "Wilson",
+      "age": 25,
+      "gender": "female",
+      "image": "/9.jpg",
+      "bio": "Photographer and nature lover",
+      "address": {
+        "city": "Portland",
+        "country": "United States"
+      }
+    },
+    {
+      "id": 10,
+      "firstName": "Ryan",
+      "lastName": "Taylor",
+      "age": 33,
+      "gender": "male",
+      "image": "/10.jpg",
+      "bio": "Entrepreneur and sports fan",
+      "address": {
+        "city": "Boston",
+        "country": "United States"
+      }
+    },
+    {
+      "id": 11,
+      "firstName": "Madison",
+      "lastName": "Thompson",
+      "age": 26,
+      "gender": "female",
+      "image": "/11.jpg",
+      "bio": "Designer and creative soul",
+      "address": {
+        "city": "Nashville",
+        "country": "United States"
+      }
+    },
+    {
+      "id": 12,
+      "firstName": "Lucas",
+      "lastName": "Rodriguez",
+      "age": 28,
+      "gender": "male",
+      "image": "/12.jpg",
+      "bio": "Teacher and adventure lover",
+      "address": {
+        "city": "Phoenix",
+        "country": "United States"
+      }
+    }
+  ]
+}
