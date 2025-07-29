@@ -39,6 +39,36 @@ const fallbackUsers: User[] = [
 
 // Use reactive ref for better SSR compatibility
 const users = ref<User[]>(fallbackUsers);
+const currentPage = ref(1);
+const usersPerPage = 8; // Show 8 users per page (2 rows on desktop)
+
+// Computed properties for pagination
+const totalUsers = computed(() => users.value.length);
+const totalPages = computed(() => Math.ceil(totalUsers.value / usersPerPage));
+const paginatedUsers = computed(() => {
+  const start = (currentPage.value - 1) * usersPerPage;
+  const end = start + usersPerPage;
+  return users.value.slice(start, end);
+});
+
+// Pagination methods
+const goToPage = (page: number) => {
+  currentPage.value = page;
+  // Scroll to top of profiles section
+  document.querySelector('#profiles-section')?.scrollIntoView({ behavior: 'smooth' });
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    goToPage(currentPage.value + 1);
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    goToPage(currentPage.value - 1);
+  }
+};
 
 // Client-side data loading to avoid SSR issues
 onMounted(async () => {
@@ -52,6 +82,32 @@ onMounted(async () => {
     // Keep fallback data
   }
 });
+
+useHead({
+  htmlAttrs: {
+    lang: 'en'
+  },
+  link: [
+    {
+      rel: 'icon',
+      type: 'image/x-icon',
+      href: '/favicon.ico'
+    }
+  ]
+})
+
+useSeoMeta({
+  title: 'Find Your Perfect Match - Nuxt Dating App | Connect with Singles',
+  description: computed(() => `Discover meaningful connections on Nuxt Dating App. Browse ${totalUsers.value} verified singles, chat securely, and find your perfect match. Join thousands of users finding love every day!`),
+  ogTitle: 'Nuxt Dating App - Where Love Begins',
+  ogDescription: 'Join the best dating platform to meet singles in your area. Safe, secure, and designed for meaningful relationships.',
+  ogImage: '/people.jpg',
+  ogUrl: 'https://yourdomain.com/',
+  twitterTitle: 'Find Love on Nuxt Dating App',
+  twitterDescription: 'Connect with verified singles and start your love story today. Join thousands finding meaningful relationships!',
+  twitterImage: '/people.jpg',
+  twitterCard: 'summary_large_image'
+})
 </script>
 
 
@@ -65,7 +121,7 @@ onMounted(async () => {
           <a href="/about" class="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition-colors inline-block">Learn More</a>
         </div>
         <div class="flex-1 order-1 lg:order-2">
-          <NuxtImg sizes="xs:100vw sm:667px" densities="1x" src="/nuxt-course-hero.png" alt="Dating App Hero Image" />
+          <NuxtImg sizes="xs:100vw sm:667px lg:800px" densities="1x" src="/people.jpg" alt="Dating App Hero Image" />
         </div>
     
       </div>
@@ -82,12 +138,22 @@ onMounted(async () => {
       </div>
     </section> -->
 
-    <section class="container py-10">
+    <section id="profiles-section" class="container py-10">
       <h2 class="text-3xl lg:text-5xl font-bold mb-6">Discover Your Perfect Match</h2>
       <p class="text-lg text-neutral font-inter mb-6">Join our community of singles and start connecting today!</p>
       
+      <!-- Profile Stats -->
+      <div class="flex items-center justify-between mb-6">
+        <p class="text-sm text-gray-600">
+          Showing {{ ((currentPage - 1) * usersPerPage) + 1 }}-{{ Math.min(currentPage * usersPerPage, totalUsers) }} of {{ totalUsers }} profiles
+        </p>
+        <p class="text-sm text-gray-600">
+          Page {{ currentPage }} of {{ totalPages }}
+        </p>
+      </div>
+      
       <!-- Loading State -->
-      <div v-if="!users.length" class="flex justify-center items-center py-20">
+      <div v-if="!paginatedUsers.length" class="flex justify-center items-center py-20">
         <div class="text-center">
           <Icon name="heroicons:heart" class="w-12 h-12 text-primary mx-auto animate-pulse mb-4" />
           <p class="text-neutral">Finding your perfect matches...</p>
@@ -96,9 +162,9 @@ onMounted(async () => {
 
       <!-- Profiles Grid - Responsive: 2 on mobile, 3 on tablet, 4 on laptop -->
       <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        <div v-for="user in users" :key="user.id" class="flex flex-col bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow">
+        <div v-for="user in paginatedUsers" :key="user.id" class="flex flex-col bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow">
           <div class="relative">
-            <NuxtImg :src="user.image"  :alt="`${user.firstName} ${user.lastName}`" class="w-full h-64 object-cover" />
+            <NuxtImg :src="user.image" sizes="xs:100vw sm:50vw lg:300px" densities="1x" format="webp" :alt="`${user.firstName} ${user.lastName}`" class="w-full h-64 object-cover" />
             <!-- Photos count overlay -->
             <div class="absolute top-3 right-3 bg-black bg-opacity-60 text-white px-2 py-1 rounded-full flex items-center gap-1">
               <Icon name="heroicons:camera" class="w-4 h-4" />
@@ -153,6 +219,14 @@ onMounted(async () => {
               </div>
             </div>
             
+            <!-- View Profile Button -->
+            <div class="mt-4">
+              <NuxtLink :to="`/users/${user.id}`" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                <Icon name="heroicons:eye" class="w-4 h-4" />
+                View Profile
+              </NuxtLink>
+            </div>
+            
             <!-- Action Buttons -->
             <div class="flex items-center justify-between pt-4">
               <!-- Like Button -->
@@ -176,6 +250,97 @@ onMounted(async () => {
               </button>
             </div>
           </div>
+        </div>
+      </div>
+      
+      <!-- Pagination Controls -->
+      <div v-if="totalPages > 1" class="flex items-center justify-center mt-12 space-x-2">
+        <!-- Previous Button -->
+        <button 
+          @click="prevPage" 
+          :disabled="currentPage === 1"
+          class="flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          <Icon name="heroicons:chevron-left" class="w-4 h-4 mr-1" />
+          Previous
+        </button>
+        
+        <!-- Page Numbers -->
+        <div class="flex space-x-1">
+          <!-- First page -->
+          <button 
+            v-if="currentPage > 3"
+            @click="goToPage(1)"
+            class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-700 transition-colors"
+          >
+            1
+          </button>
+          
+          <!-- Ellipsis -->
+          <span v-if="currentPage > 4" class="px-3 py-2 text-sm font-medium text-gray-500">...</span>
+          
+          <!-- Previous page -->
+          <button 
+            v-if="currentPage > 1"
+            @click="goToPage(currentPage - 1)"
+            class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-700 transition-colors"
+          >
+            {{ currentPage - 1 }}
+          </button>
+          
+          <!-- Current page -->
+          <button 
+            class="px-3 py-2 text-sm font-medium text-white bg-blue-500 border border-blue-500 cursor-default"
+          >
+            {{ currentPage }}
+          </button>
+          
+          <!-- Next page -->
+          <button 
+            v-if="currentPage < totalPages"
+            @click="goToPage(currentPage + 1)"
+            class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-700 transition-colors"
+          >
+            {{ currentPage + 1 }}
+          </button>
+          
+          <!-- Ellipsis -->
+          <span v-if="currentPage < totalPages - 3" class="px-3 py-2 text-sm font-medium text-gray-500">...</span>
+          
+          <!-- Last page -->
+          <button 
+            v-if="currentPage < totalPages - 2"
+            @click="goToPage(totalPages)"
+            class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-700 transition-colors"
+          >
+            {{ totalPages }}
+          </button>
+        </div>
+        
+        <!-- Next Button -->
+        <button 
+          @click="nextPage" 
+          :disabled="currentPage === totalPages"
+          class="flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          Next
+          <Icon name="heroicons:chevron-right" class="w-4 h-4 ml-1" />
+        </button>
+      </div>
+      
+      <!-- Page Jump -->
+      <div v-if="totalPages > 5" class="flex items-center justify-center mt-6">
+        <div class="flex items-center space-x-2">
+          <span class="text-sm text-gray-600">Jump to page:</span>
+          <select 
+            v-model="currentPage" 
+            @change="goToPage(currentPage)"
+            class="px-3 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option v-for="page in totalPages" :key="page" :value="page">
+              {{ page }}
+            </option>
+          </select>
         </div>
       </div>
     </section>

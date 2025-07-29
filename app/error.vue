@@ -1,33 +1,48 @@
+<script setup lang="ts">
+import type { NuxtError } from '#app'
+
+defineProps({
+    error: Object as () => NuxtError
+})
+
+
+</script>
+
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50">
+  <div class="min-h-screen bg-gray-50 flex  justify-center px-10 py-20">
     <div class="max-w-md w-full text-center">
-      <h1 class="text-6xl font-bold text-gray-900 mb-4">{{ error.statusCode }}</h1>
-      <h2 class="text-2xl font-semibold text-gray-700 mb-4">
-        {{ error.statusCode === 404 ? 'Page Not Found' : 'Something went wrong' }}
-      </h2>
-      <p class="text-gray-600 mb-8">{{ error.message }}</p>
+      <!-- Error Icon -->
+      <div class="mb-6">
+        <Icon name="heroicons:exclamation-triangle" class="w-16 h-16 text-red-500 mx-auto" />
+      </div>
+      
+      <!-- Error Title -->
+      <h1 class="text-3xl font-bold text-gray-900 mb-4">
+        {{ error?.statusCode || 404 }}
+      </h1>
+      
+      <!-- Error Message -->
+      <p class="text-xl text-gray-600 mb-8">
+        {{ error?.statusMessage || 'Something went wrong' }}
+      </p>
+      
+      <!-- Action Buttons -->
       <div class="space-y-4">
         <button 
-          @click="handleError" 
-          class="w-full bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
+          @click="clearError({ redirect: '/' })"
+          class="w-full  bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors font-medium"
+        >
+          Go Home
+        </button>
+        
+        <button 
+          @click="clearError()"
+          class="w-full bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors font-medium"
         >
           Try Again
         </button>
-        <a 
-          href="/" 
-          class="block w-full bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors"
-        >
-          Go Home
-        </a>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-defineProps({
-  error: Object
-})
-
-const handleError = () => clearError({ redirect: '/' })
-</script>
