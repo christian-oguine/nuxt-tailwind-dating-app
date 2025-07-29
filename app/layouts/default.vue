@@ -1,8 +1,6 @@
 <template>
   <div>
-    <ClientOnly>
-      <TopNavigation />
-    </ClientOnly>
+    <TopNavigation />
     <slot />
   </div>
 </template>
